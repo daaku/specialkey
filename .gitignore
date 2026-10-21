@@ -1,0 +1,5 @@
+/specialkey
+/build/
+/src/
+/pkg/
+/*.pkg.tar.*

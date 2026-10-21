@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=specialkey
+Comment=Pick a special character to type and copy
+Exec=specialkey
+Icon=accessories-character-map
+Terminal=false
+Categories=Utility;
+Keywords=character;symbol;unicode;superscript;squared;cubed;
