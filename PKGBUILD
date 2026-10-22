@@ -1,6 +1,6 @@
 # Builds specialkey from this checkout: makepkg here, then pacman -U the package.
 pkgname=specialkey
-pkgver=1
+pkgver=$(git rev-list --count HEAD)
 pkgrel=1
 pkgdesc='Pick a special character from a popup grid, then type it and copy it'
 arch=('x86_64')
