@@ -55,7 +55,7 @@ window.specialkey {
 	border-radius: 16px;
 }
 .specialkey grid {
-	padding: 20px;
+	padding: 0 20px 20px 20px;
 }
 .specialkey button {
 	background: rgba(255, 255, 255, 0.06);
@@ -75,6 +75,18 @@ window.specialkey {
 	background: rgba(255, 255, 255, 0.18);
 	border-color: rgba(120, 170, 255, 0.9);
 	outline: none;
+}
+.specialkey button.close {
+	background: transparent;
+	color: rgba(255, 255, 255, 0.6);
+	min-width: 28px;
+	min-height: 28px;
+	padding: 0;
+	border-radius: 14px;
+}
+.specialkey button.close:hover {
+	background: rgba(255, 255, 255, 0.14);
+	color: white;
 }
 .specialkey .char {
 	font-size: 40px;
@@ -160,7 +172,22 @@ func activate(app *gtk.Application, onPick func(string)) {
 			first = btn
 		}
 	}
-	win.SetChild(grid)
+
+	// Not focusable, so the arrow keys stay within the grid; Escape closes
+	// from the keyboard.
+	closeBtn := gtk.NewButtonFromIconName("window-close-symbolic")
+	closeBtn.AddCSSClass("close")
+	closeBtn.SetTooltipText("Close")
+	closeBtn.SetFocusable(false)
+	closeBtn.SetHAlign(gtk.AlignEnd)
+	closeBtn.SetMarginTop(8)
+	closeBtn.SetMarginEnd(8)
+	closeBtn.ConnectClicked(app.Quit)
+
+	content := gtk.NewBox(gtk.OrientationVertical, 0)
+	content.Append(closeBtn)
+	content.Append(grid)
+	win.SetChild(content)
 
 	keyCtl := gtk.NewEventControllerKey()
 	keyCtl.ConnectKeyPressed(func(keyval, _ uint, _ gdk.ModifierType) bool {
@@ -171,16 +198,6 @@ func activate(app *gtk.Application, onPick func(string)) {
 		return false
 	})
 	win.AddController(keyCtl)
-
-	// Dismiss like a popup when focus moves elsewhere.
-	wasActive := false
-	win.NotifyProperty("is-active", func() {
-		if win.IsActive() {
-			wasActive = true
-		} else if wasActive {
-			app.Quit()
-		}
-	})
 
 	win.SetVisible(true)
 	glib.IdleAdd(func() { first.GrabFocus() })
